@@ -1,4 +1,5 @@
 @import "header.css";
+@import "content.css";
 
 .toSekCard {
     color: red;
@@ -8,4 +9,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
 }

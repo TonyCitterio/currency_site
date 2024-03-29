@@ -1,0 +1,81 @@
+.eurAndUsdToSek {
+  margin-block: 2.5rem;
+  width: clamp(20ch, 75%, 90ch);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.eurAndUsdToSekHeader {
+  padding: 1rem;
+  width: 100%;
+  background-color: #64b8ba;
+  color: white;
+  font-size: 1.25rem;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.exampleContainer {
+  margin-block: 0.25rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.exampleContainer h3 {
+  margin: 1rem 0 1.35rem;
+}
+
+.exampleContainer > *:nth-child(1) {
+  margin-block: 0.5rem;
+  flex: 1 1 50%;
+  min-width: 35ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exampleContainer > *:nth-child(2) {
+  margin-block: 0.5rem;
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#usdToSekContainer {
+  margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#eurToSekContainer {
+  margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popularCurrencyToSekCard {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #64b8ba;
+  width: clamp(20ch, 70%, 39ch);
+}
+
+.popularCurrencyToSekCard span {
+  margin-inline: 0.3rem;
+}
+
+.errorMessage {
+  text-wrap: pretty;
+  padding: 0.5rem;
+}

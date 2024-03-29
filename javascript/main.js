@@ -1,6 +1,8 @@
 const fetchData = async () => {
   try {
-    const response = await fetch("https://cdn.forexvalutaomregner.dk/api/latest.json");
+    const response = await fetch(
+      "https://cdn.forexvalutaomregner.dk/api/latest.json"
+    );
     if (!response.ok) {
       throw new Error("Network response was not ok.");
     }
@@ -11,13 +13,17 @@ const fetchData = async () => {
   }
 };
 
-const createAndAppendDiv = async () => {
+const createAndAppendDivCurrencyRate = async () => {
   const rates = await fetchData();
   if (!rates) return;
+  const currencyCodes = [ "SEK", "DKK", "EUR", "GBP", "TRY", "PLN", "THB", "NOK", "USD"];
 
-  const currencyCodes = ["SEK", "DKK", "EUR", "GBP", "TRY", "PLN", "THB", "NOK", "USD"];
-  const filteredRates = rates.filter(([currencyCode, _]) => currencyCodes.includes(currencyCode));
-  const sekRate = filteredRates.find(([currencyCode, _]) => currencyCode === "SEK")[1];
+  const filteredRates = rates.filter(([currencyCode, _]) =>
+    currencyCodes.includes(currencyCode)
+  );
+  const sekRate = filteredRates.find(
+    ([currencyCode, _]) => currencyCode === "SEK"
+  )[1];
   const container = document.getElementById("currencyContainer");
 
   /* const ratesObject = filteredRates.reduce((acc, [currencyCode, rate]) => {
@@ -32,10 +38,49 @@ const createAndAppendDiv = async () => {
       const rateToSek = sekRate / rate;
       const currencyCard = document.createElement("div");
       currencyCard.classList.add("toSekCard");
-      currencyCard.innerText = `${currencyCode} to SEK: ${rateToSek.toFixed(3)}`;
+      currencyCard.innerText = `${currencyCode} to SEK: ${rateToSek.toFixed(
+        3
+      )}`;
       container.appendChild(currencyCard);
     }
   });
 };
 
-createAndAppendDiv();
+const createAndAppendCurrencyConversionCard = async () => {
+  const rates = await fetchData();
+  if (!rates) {
+    displayFallbackMessage();
+    return;
+  }
+  const sek = rates.filter((a) => a[0] === "SEK")[0][1];
+  const eur = rates.filter((a) => a[0] === "EUR")[0][1];
+  const eurToSek = sek / eur;
+  const numbers = [5, 10, 25, 50, 100];
+  
+  const appendConversionCards = (fromCurrency, toCurrency, containerId) => {
+    numbers.forEach((number) => {
+      const container = document.getElementById(containerId);
+      const card = document.createElement("div");
+      card.classList.add("popularCurrencyToSekCard");
+      card.innerHTML = `<p>${number} ${fromCurrency} <span></span> = <span></span>${(
+        number * toCurrency
+        ).toFixed(3)} SEK</p>`;
+        container.appendChild(card);
+      });
+    };
+
+  appendConversionCards("USD", sek, "usdToSekContainer");
+  appendConversionCards("EUR", eurToSek, "eurToSekContainer");
+};
+
+const displayFallbackMessage = () => {
+  const fallbackContainers = ["usdToSekContainer", "eurToSekContainer"];
+  fallbackContainers.forEach((containerId) => {
+    const container = document.getElementById(containerId);
+    container.innerHTML =
+    "<p class='errorMessage'>Ledsen, valuta kurser är för närvarande inte tillgängliga.</p>";
+  });
+};
+
+createAndAppendDivCurrencyRate();
+createAndAppendCurrencyConversionCard();

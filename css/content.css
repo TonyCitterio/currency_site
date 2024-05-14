@@ -1,8 +1,99 @@
+.currencyCalculatorContainer {
+  padding-block: 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: #e08938; */
+  background-color: #ee963a;
+}
+
+.inputContainer {
+  width: clamp(42ch, 85%, 120ch);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inputContentTo, .inputContentFrom {
+  flex: 1 1 48%;
+  min-width: 35ch;
+  position: relative;
+  display: flex;
+  background-color: white;
+  /* border: 3px solid pink; */
+}
+
+.fromAndTo {
+  position: absolute;
+  top: -20px;
+  font-weight: bolder;
+  color: black;
+}
+
+.info {
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.info,
+.dropdown {
+  width: 68%;
+}
+
+.inputNumberTo, .inputNumberFrom {
+  display: flex;
+  flex-direction: column;
+  width: 32%;
+}
+
+.inputNumberTo input, .inputNumberFrom input {
+  padding-right: 0.3rem;
+  width: 100%;
+  height: 100%;
+  /* font-size: 1.2rem; */
+  letter-spacing: 1px;
+  font-weight: bold;
+  font-family: inherit;
+  text-align: right;
+  border: none;
+}
+
+.inputNumberTo input::placeholder, .inputNumberFrom input::placeholder {
+  letter-spacing: normal;
+  font-weight: normal;
+} 
+
+.inputNumberTo input:focus, .inputNumberFrom input:focus {
+  outline: none;
+}
+
+.inputContentTo.focused, .inputContentFrom.focused {
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.sumContainer {
+  margin-top: 0.5rem;
+  background-color: white;
+  width: clamp(42ch, 85%, 120ch);
+  padding: 2rem;
+}
+
 .currencyRatesContainer {
   margin: 2rem 0 1rem;
   width: clamp(20ch, 75%, 120ch);
   display: flex;
-  
 }
 
 #currencyContainer {
@@ -102,4 +193,5 @@
 .errorMessage {
   text-wrap: pretty;
   padding: 0.5rem;
+  color: red;
 }

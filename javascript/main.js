@@ -1,5 +1,3 @@
-const currencyCodes = [ "SEK", "DKK", "EUR", "GBP", "TRY", "PLN", "THB", "NOK", "USD"];
-
 const usa = new Image();
 usa.src = "../picture/icons8-usa-48.png";
 usa.alt = "USA Flag";
@@ -28,7 +26,7 @@ tur.alt = "Turkey Flag";
 const currencies = [
   { code: "USD", img: usa },
   { code: "DKK", img: den },
-  { code: "EUR", img: eur },
+  { code: "SEK", img: eur },
   { code: "GBP", img: uk },
   { code: "PLN", img: pol },
   { code: "THB", img: tha },
@@ -39,7 +37,7 @@ const currencies = [
 const fetchData = async () => {
   try {
     const response = await fetch(
-      "https://cdn.forexvalutaomregner.dk/api/latest.json"
+      "https://api.frankfurter.app/latest?to=USD,SEK,DKK,GBP,NOK,PLN,THB,TRY,EUR"
     );
     if (!response.ok) {
       throw new Error("Network response was not ok.");
@@ -51,19 +49,15 @@ const fetchData = async () => {
   }
 };
 
-//Handles and displays popular rates 
+//Handles and displays popular rates
 const createAndAppendDivCurrencyRate = async () => {
   const rates = await fetchData();
   if (!rates) {
-    displayFallbackMessage(['currencyContainer']);
+    displayFallbackMessage(["currencyContainer"]);
     return;
   }
 
-  const filteredRates = rates.filter(([currencyCode, _]) =>
-    currencyCodes.includes(currencyCode)
-  );
-
-  const ratesObject = filteredRates.reduce((acc, [currencyCode, rate]) => {
+  const ratesObject = rates.reduce((acc, [currencyCode, rate]) => {
     acc[currencyCode] = rate;
     return acc;
   }, {});
@@ -72,13 +66,19 @@ const createAndAppendDivCurrencyRate = async () => {
     const container = document.getElementById(containerId);
     const card = document.createElement("div");
     card.classList.add("toSekCard");
-    card.innerHTML = `<p>${currency} till SEK ${rate.toFixed(3)}</p>`;
+    card.innerHTML =
+      currency === "SEK"
+        ? `<p>EUR till SEK ${rate.toFixed(3)}</p>`
+        : `<p>${currency} till SEK ${rate.toFixed(3)}</p>`;
     card.appendChild(img);
     container.appendChild(card);
   };
-  
+
   currencies.forEach(({ code, img }) => {
-    const rate = ratesObject["SEK"] / ratesObject[code];
+    const rate =
+      code === "SEK"
+        ? ratesObject["SEK"]
+        : ratesObject["SEK"] / ratesObject[code];
     appendCurrencyRateDiv(code, rate, img, "currencyContainer");
   });
 };
@@ -86,29 +86,34 @@ const createAndAppendDivCurrencyRate = async () => {
 //handle and display currency tables
 const createAndAppendPopularCurrencyCard = async () => {
   const rates = await fetchData();
+
   if (!rates) {
-    displayFallbackMessage(['usdToSekContent', 'eurToSekContent']);
+    displayFallbackMessage(["usdToSekContent", "eurToSekContent"]);
     return;
   }
+  const usd = rates.filter((a) => a[0] === "USD")[0][1];
   const sek = rates.filter((a) => a[0] === "SEK")[0][1];
-  const eur = rates.filter((a) => a[0] === "EUR")[0][1];
-  const eurToSek = sek / eur;
+  const usdToSek = sek / usd;
   const numbers = [5, 10, 25, 50, 100];
-  
-  const appendPopularCurrencyCards = (fromCurrency, toCurrency, containerId) => {
+
+  const appendPopularCurrencyCards = (
+    fromCurrency,
+    toCurrency,
+    containerId
+  ) => {
     numbers.forEach((number) => {
       const container = document.getElementById(containerId);
       const card = document.createElement("div");
       card.classList.add("popularCurrencyToSekCard");
       card.innerHTML = `<p>${number} ${fromCurrency} <span></span> = <span></span>${(
         number * toCurrency
-        ).toFixed(3)} SEK</p>`;
-        container.appendChild(card);
-      });
-    };
+      ).toFixed(3)} SEK</p>`;
+      container.appendChild(card);
+    });
+  };
 
-  appendPopularCurrencyCards("USD", sek, "usdToSekContent");
-  appendPopularCurrencyCards("EUR", eurToSek, "eurToSekContent");
+  appendPopularCurrencyCards("USD", usdToSek, "usdToSekContent");
+  appendPopularCurrencyCards("EUR", sek, "eurToSekContent");
 };
 
 //Handles and display error if the fetch didn't go through
@@ -117,10 +122,101 @@ const displayFallbackMessage = (containerIds) => {
     const container = document.getElementById(containerId);
     if (container) {
       container.innerHTML =
-      "<p class='errorMessage'>Ledsen, valuta kurser är för närvarande inte tillgängliga.</p>";
+        "<p class='errorMessage'>Ledsen, valuta kurser är för närvarande inte tillgängliga.</p>";
     }
   });
 };
+
+//Fucus the parent div when the input is in focus
+document.addEventListener("DOMContentLoaded", function () {
+  let inputs = document.querySelectorAll(
+    ".inputNumberTo input, .inputNumberFrom input"
+  );
+
+  inputs.forEach(function (input) {
+    input.addEventListener("focus", function () {
+      this.closest(".inputContentTo, .inputContentFrom").classList.add(
+        "focused"
+      );
+    });
+
+    input.addEventListener("blur", function () {
+      this.closest(".inputContentTo, .inputContentFrom").classList.remove(
+        "focused"
+      );
+    });
+  });
+});
+
+const currencyCalculator = async () => {
+  const rates = await fetchData();
+  if (!rates) {
+    displayFallbackMessage(["currencyContainer"]);
+    return;
+  }
+
+  const ratesObject = rates.reduce((acc, [currencyCode, rate]) => {
+    acc[currencyCode] = rate;
+    return acc;
+  }, {});
+
+  const sek = document.getElementById("sek").value;
+  const toCurrency = document.getElementById("toCurrency").value;
+  let sekToEur = sek / ratesObject["SEK"]
+
+  console.log(sek)
+  console.log(toCurrency)
+  console.log(sekToEur)
+};
+
+document.getElementById("sek").addEventListener("keyup", currencyCalculator);
+document.getElementById("toCurrency").addEventListener("keyup", currencyCalculator);
+/* const inputSek = document.getElementById("sek");
+const toCurrency = document.getElementById("toCurrency"); */
+
+/* document.getElementById("sek").addEventListener("input", async (event) => {
+  const rates = await fetchData();
+  inputSek = parseInt(event.target.value);
+
+  const ratesObject = rates.reduce((acc, [currencyCode, rate]) => {
+    acc[currencyCode] = rate;
+    return acc;
+  }, {});
+
+  let result = inputSek / ratesObject["SEK"]
+  console.log(result)
+  
+}); */
+
+/* document.getElementById("toCurrency").addEventListener("input", (event) => {
+  toCurrency = parseInt(event.target.value);
+
+  currencyCalculator(inputSek, toCurrency);
+}); */
+
+/* const currencyCalculator = async (sek, toCurrency) => {
+  const rates = await fetchData();
+
+  const ratesObject = rates.reduce((acc, [currencyCode, rate]) => {
+    acc[currencyCode] = rate;
+    return acc;
+  }, {});
+  console.log(ratesObject["SEK"])
+  let result = ratesObject["SEK"] * toCurrency;
+  sek = result
+}; */
+
+/* inputSek.addEventListener("keyup", function(event) {
+  const sek = parseInt(event.target.value);
+
+  currencyCalculator(sek, toCurrency)
+});
+
+toCurrency.addEventListener("keyup", function(event) {
+ const toCurrency = parseInt(event.target.value);
+
+ currencyCalculator(sek, toCurrency)
+}) */
 
 createAndAppendDivCurrencyRate();
 createAndAppendPopularCurrencyCard();

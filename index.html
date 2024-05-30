@@ -15,22 +15,59 @@
     <main>
       <section class="currencyCalculatorContainer">
         <div class="inputContainer">
-          <div class="inputContentTo">
+          <div class="inputContentFrom">
             <p class="fromAndTo">Från</p>
-            <div class="info"><img src="./picture/icons8-sweden-48.png" alt="Sveriges flagga"><div><p>Sverige</p><p>Svensk krona (SEK)</p></div></div>
+            <div class="info">
+              <img src="./picture/icons8-sweden-48.png" alt="Sveriges flagga" />
+              <div>
+                <p>Sverige</p>
+                <p>Svensk Krona (SEK)</p>
+              </div>
+            </div>
             <div class="inputNumberTo">
-              <input type="number" name="sek" id="sek" placeholder="Ange Belopp" />
+              <input
+                type="text"
+                name="sek"
+                id="sek"
+                placeholder="Ange Belopp"
+              />
             </div>
           </div>
-          <div class="inputContentFrom">
+          <div class="inputContentTo">
             <p class="fromAndTo">Till</p>
-            <div class="dropdown"><p>Hej</p></div>
+            <div class="dropdown">
+              <div class="dropdownContent"><img src="" alt=""><div><p class="dropdownCountry"></p><p class="dropdownCurrencyName"></p></div></div>
+              <div class="dropdownMenu">
+                <ul>
+                  <li data-currencyCode="EUR"><img src="./picture/icons8-european-union-circular-flag-48.png" alt="EUs flagga"><p><span>EUR</span> - Euro - Eur</p></li>
+                  <li data-currencyCode="USD"><img src="./picture/icons8-usa-48.png" alt="USAs flagga"><p><span>USD</span> - USA - Dollar</p></li>
+                  <li data-currencyCode="GBP"><img src="./picture/icons8-great-britain-48.png" alt="Storbritanniens flagga"><p><span>GBP</span> - Storbritannien - Pund</p></li>
+                  <li data-currencyCode="DKK"><img src="./picture/icons8-denmark-48.png" alt="Danmarkss flagga"><p><span>DKK</span> - Danmark - Krona</p></li>
+                  <li data-currencyCode="TRY"><img src="./picture/icons8-turkey-48.png" alt="Turkiets flagga"><p><span>TRY</span> - Turkiet - Lira</p></li>
+                  <li data-currencyCode="THB"><img src="./picture/icons8-thailand-48.png" alt="Thailands flagga"><p><span>THB</span> - Thailand - Baht</p></li>
+                  <li data-currencyCode="PLN"><img src="./picture/icons8-poland-48.png" alt="Polens flagga"><p><span>PLN</span> - Polen - Zloty</p></li>
+                  <li data-currencyCode="NOK"><img src="./picture/icons8-norway-48.png" alt="Norges flagga"><p><span>NOK</span> - Norge - Krona</p></li>
+                </ul>
+              </div>
+            </div>
             <div class="inputNumberFrom">
-              <input type="number" name="toCurrency" id="toCurrency" placeholder="Ange Belopp"/>
+              <input
+                type="text"
+                name="toCurrency"
+                id="toCurrency"
+                placeholder="Ange Belopp"
+              />
             </div>
           </div>
         </div>
-        <div class="sumContainer"></div>
+        <div id="sumContainer">
+          <h2>Summering</h2>
+          <div class="currencyInfo">
+            <p>Valutakurs</p>
+          </div>
+          <div class="sumContainerFrom"><p>Svensk Krona</p></div>
+          <div class="sumContainerTo"></div>
+        </div>
       </section>
       <section class="currencyRatesContainer">
         <div id="currencyContainer"></div>

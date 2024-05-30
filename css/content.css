@@ -40,6 +40,47 @@
 .info,
 .dropdown {
   width: 68%;
+  border-right: 1px solid #ee963a;
+}
+
+.dropdown {
+  padding: 0.25rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdownContent {
+  display: flex;
+  align-items: center;
+
+}
+
+.dropdownMenu {
+  display: none;
+  width: 100%;
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  background-color: white;
+}
+
+.dropdownMenu li {
+  padding: 0.5rem;
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+}
+
+.dropdownMenu li:nth-child(odd) {
+  background-color: #f5f5f5;
+}
+
+.dropdownMenu li img {
+  margin-right: 0.5rem;
+}
+
+.dropdownMenu li span {
+  font-weight: bold;
 }
 
 .inputNumberTo, .inputNumberFrom {
@@ -83,11 +124,33 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.sumContainer {
-  margin-top: 0.5rem;
+#sumContainer {
+  margin-top: 0.75rem;
   background-color: white;
   width: clamp(42ch, 85%, 120ch);
-  padding: 2rem;
+  padding: 1rem;
+}
+
+.currencyInfo {
+  margin-top: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  width: clamp(15ch, 95%, 38ch);
+}
+
+.sumContainerFrom {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  width: clamp(15ch, 95%, 38ch);
+}
+
+.sumContainerTo {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  width: clamp(15ch, 95%, 38ch);
+  border: 1px solid pink;
 }
 
 .currencyRatesContainer {

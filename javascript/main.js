@@ -24,14 +24,14 @@ tur.src = "../picture/icons8-turkey-48.png";
 tur.alt = "Turkey Flag";
 
 const currencies = [
-  { code: "USD", img: usa },
-  { code: "DKK", img: den },
-  { code: "SEK", img: eur },
-  { code: "GBP", img: uk },
-  { code: "PLN", img: pol },
-  { code: "THB", img: tha },
-  { code: "NOK", img: nor },
-  { code: "TRY", img: tur },
+  { code: "SEK", img: eur, name: "Euro" },
+  { code: "USD", img: usa, name: "Amerikanska dollar" },
+  { code: "GBP", img: uk, name: "Pund sterling" },
+  { code: "DKK", img: den, name: "Dansk krona" },
+  { code: "TRY", img: tur, name: "Turkisk lira" },
+  { code: "THB", img: tha, name: "Thailänsk bath" },
+  { code: "PLN", img: pol, name: "Polsk zloty" },
+  { code: "NOK", img: nor, name: "Norsk krona" },
 ];
 
 const fetchData = async () => {
@@ -73,7 +73,7 @@ const createAndAppendDivCurrencyRate = async () => {
     return;
   }
 
-  const appendCurrencyRateDiv = (currency, rate, img, containerId) => {
+  /* const appendCurrencyRateDiv = (currency, rate, img, containerId) => {
     const container = document.getElementById(containerId);
     const card = document.createElement("div");
     card.classList.add("toSekCard");
@@ -91,7 +91,42 @@ const createAndAppendDivCurrencyRate = async () => {
         ? ratesObject["SEK"]
         : ratesObject["SEK"] / ratesObject[code];
     appendCurrencyRateDiv(code, rate, img, "currencyContainer");
-  });
+  }); */
+  const appendCurrencyRateDiv = (currency, rate, img, name, containerId) => {
+  const container = document.getElementById(containerId);
+  const card = document.createElement("div");
+  card.classList.add("toSekCard");
+
+  // Create a paragraph element for the text
+  const textElement1 = document.createElement("p");
+  textElement1.innerHTML = currency === "SEK"
+    ? `EUR valutakurs ${rate.toFixed(3)}`
+    : `${currency} valutakurs ${rate.toFixed(3)}`;
+
+    const textElement2 = document.createElement("p");
+  textElement2.innerHTML = currency === "SEK"
+    ? ` Bla bla bla`
+    : `Bla bla bla`;
+
+  // Append the img element first
+  card.appendChild(img);
+  // Then append the text element
+  card.appendChild(textElement1);
+
+  
+
+  // Finally, append the card to the container
+  container.appendChild(card);
+};
+
+currencies.forEach(({ code, img, name }) => {
+  const rate =
+    code === "SEK"
+      ? ratesObject["SEK"]
+      : ratesObject["SEK"] / ratesObject[code];
+  appendCurrencyRateDiv(code, rate, img, name, "currencyContainer");
+});
+
 };
 
 //handle and display currency tables

@@ -15,7 +15,8 @@
   gap: 0.5rem;
 }
 
-.inputContentTo, .inputContentFrom {
+.inputContentTo,
+.inputContentFrom {
   flex: 1 1 48%;
   min-width: 35ch;
   position: relative;
@@ -52,7 +53,6 @@
 .dropdownContent {
   display: flex;
   align-items: center;
-
 }
 
 .dropdownMenu {
@@ -83,13 +83,15 @@
   font-weight: bold;
 }
 
-.inputNumberTo, .inputNumberFrom {
+.inputNumberTo,
+.inputNumberFrom {
   display: flex;
   flex-direction: column;
   width: 32%;
 }
 
-.inputNumberTo input, .inputNumberFrom input {
+.inputNumberTo input,
+.inputNumberFrom input {
   padding-right: 0.3rem;
   width: 100%;
   height: 100%;
@@ -101,16 +103,19 @@
   border: none;
 }
 
-.inputNumberTo input::placeholder, .inputNumberFrom input::placeholder {
+.inputNumberTo input::placeholder,
+.inputNumberFrom input::placeholder {
   letter-spacing: normal;
   font-weight: normal;
-} 
+}
 
-.inputNumberTo input:focus, .inputNumberFrom input:focus {
+.inputNumberTo input:focus,
+.inputNumberFrom input:focus {
   outline: none;
 }
 
-.inputContentTo.focused, .inputContentFrom.focused {
+.inputContentTo.focused,
+.inputContentFrom.focused {
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
@@ -155,35 +160,47 @@ input[type="number"] {
 
 .currencyRatesContainer {
   margin: 2rem 0 1rem;
-  width: clamp(20ch, 75%, 120ch);
+  width: clamp(42ch, 85%, 120ch);
   display: flex;
+  flex-direction: column;
+}
+
+.currencyRatesContainerHeader {
+  padding: 1rem;
+  width: 100%;
+  background-color: #64b8ba;
+  color: white;
+  font-size: 1.25rem;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 #currencyContainer {
-  width: clamp(20ch, 80%, 90ch);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  padding-block: 1rem;
+  padding-left: 0.5rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 }
 
 .toSekCard {
-  padding: 0.5rem;
-  color: red;
   display: flex;
-  width: 250px;
-  justify-content: center;
   align-items: center;
-  border: 1px solid pink;
 }
 
+.toSekCard img {
+  margin-right: 0.2rem;
+}
 .eurAndUsdToSekContainer {
   margin-block: 2.5rem;
   width: clamp(20ch, 75%, 90ch);
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 0.5rem;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 }
 
 .eurAndUsdToSekHeader {
@@ -197,10 +214,12 @@ input[type="number"] {
 }
 
 .exampleContainer {
-  margin-block: 0.25rem;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 }
 
 .exampleContainer h3 {

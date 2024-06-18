@@ -24,14 +24,14 @@ tur.src = "../picture/icons8-turkey-48.png";
 tur.alt = "Turkey Flag";
 
 const currencies = [
-  { code: "SEK", img: eur, name: "Euro" },
-  { code: "USD", img: usa, name: "Amerikanska dollar" },
-  { code: "GBP", img: uk, name: "Pund sterling" },
-  { code: "DKK", img: den, name: "Dansk krona" },
-  { code: "TRY", img: tur, name: "Turkisk lira" },
-  { code: "THB", img: tha, name: "Thailänsk bath" },
-  { code: "PLN", img: pol, name: "Polsk zloty" },
-  { code: "NOK", img: nor, name: "Norsk krona" },
+  { code: "SEK", img: eur },
+  { code: "USD", img: usa },
+  { code: "GBP", img: uk },
+  { code: "DKK", img: den },
+  { code: "TRY", img: tur },
+  { code: "THB", img: tha },
+  { code: "PLN", img: pol },
+  { code: "NOK", img: nor },
 ];
 
 const fetchData = async () => {
@@ -53,7 +53,7 @@ const fetchData = async () => {
 const storeRatesGlobally = async () => {
   try {
     const rates = await fetchData();
-    if(!rates) throw new Error("Faild to fetch rates");
+    if (!rates) throw new Error("Faild to fetch rates");
     ratesObject = rates.reduce((acc, [currencyCode, rate]) => {
       acc[currencyCode] = rate;
       return acc;
@@ -73,15 +73,19 @@ const createAndAppendDivCurrencyRate = async () => {
     return;
   }
 
-  /* const appendCurrencyRateDiv = (currency, rate, img, containerId) => {
+  const appendCurrencyRateDiv = (currency, rate, img, containerId) => {
     const container = document.getElementById(containerId);
     const card = document.createElement("div");
     card.classList.add("toSekCard");
-    card.innerHTML =
+
+    const textElement = document.createElement("p");
+    textElement.innerHTML =
       currency === "SEK"
-        ? `<p>EUR till SEK ${rate.toFixed(3)}</p>`
-        : `<p>${currency} till SEK ${rate.toFixed(3)}</p>`;
+        ? `EUR Valutakurs ${rate.toFixed(3)}`
+        : `${currency} Valutakurs ${rate.toFixed(3)}`;
+
     card.appendChild(img);
+    card.appendChild(textElement);
     container.appendChild(card);
   };
 
@@ -91,60 +95,21 @@ const createAndAppendDivCurrencyRate = async () => {
         ? ratesObject["SEK"]
         : ratesObject["SEK"] / ratesObject[code];
     appendCurrencyRateDiv(code, rate, img, "currencyContainer");
-  }); */
-  const appendCurrencyRateDiv = (currency, rate, img, name, containerId) => {
-  const container = document.getElementById(containerId);
-  const card = document.createElement("div");
-  card.classList.add("toSekCard");
-
-  // Create a paragraph element for the text
-  const textElement1 = document.createElement("p");
-  textElement1.innerHTML = currency === "SEK"
-    ? `EUR valutakurs ${rate.toFixed(3)}`
-    : `${currency} valutakurs ${rate.toFixed(3)}`;
-
-    const textElement2 = document.createElement("p");
-  textElement2.innerHTML = currency === "SEK"
-    ? ` Bla bla bla`
-    : `Bla bla bla`;
-
-  // Append the img element first
-  card.appendChild(img);
-  // Then append the text element
-  card.appendChild(textElement1);
-
-  
-
-  // Finally, append the card to the container
-  container.appendChild(card);
-};
-
-currencies.forEach(({ code, img, name }) => {
-  const rate =
-    code === "SEK"
-      ? ratesObject["SEK"]
-      : ratesObject["SEK"] / ratesObject[code];
-  appendCurrencyRateDiv(code, rate, img, name, "currencyContainer");
-});
-
+  });
 };
 
 //handle and display currency tables
 const createAndAppendPopularCurrencyCard = async () => {
   const success = await storeRatesGlobally();
   if (!success) {
-    displayFallbackMessage(["usdToSekContent","eurToSekContent" ]);
+    displayFallbackMessage(["usdToSekContent", "eurToSekContent"]);
     return;
   }
- 
+
   const usdToSek = ratesObject["SEK"] / ratesObject["USD"];
   const numbers = [5, 10, 25, 50, 100];
 
-  const appendPopularCurrencyCards = (
-    fromCurrency,
-    toCurrency,
-    containerId
-  ) => {
+  const appendPopularCurrencyCards = (fromCurrency, toCurrency, containerId) => {
     numbers.forEach((number) => {
       const container = document.getElementById(containerId);
       const card = document.createElement("div");
@@ -165,8 +130,7 @@ const displayFallbackMessage = (containerIds) => {
   containerIds.forEach((containerId) => {
     const container = document.getElementById(containerId);
     if (container) {
-      container.innerHTML =
-        "<p class='errorMessage'>Ledsen, valuta kurser är för närvarande inte tillgängliga.</p>";
+      container.innerHTML = "<p class='errorMessage'>Ledsen, valuta kurser är för närvarande inte tillgängliga.</p>";
     }
   });
 };
@@ -266,9 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const handleDropdownContent = (currencyCode, imgSrc, countryName, currencyName) => {
     const flag = dropdownContent.querySelector("img");
     const country = dropdownContent.querySelector(".dropdownCountry");
-    const currencyTitle = dropdownContent.querySelector(
-      ".dropdownCurrencyName"
-    );
+    const currencyTitle = dropdownContent.querySelector(".dropdownCurrencyName");
 
     flag.src = imgSrc;
     flag.alt = `${countryName} flagga`;
@@ -304,6 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         handleDropdownContent(currencyCode, imgSrc, countryName, currencyName);
         currencyCalculator(selectedCurrency, true, selectedCurrencyName);
+        handleCurrencyCodeSmallScreen(selectedCurrency);
         dropdownMenu.style.display = "none";
         document.removeEventListener("click", outsideClick);
       });
@@ -323,11 +286,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   handleDropdownContent("EUR", "./picture/icons8-european-union-circular-flag-48.png", "Euro", "Euro");
   currencyCalculator(selectedCurrency, true, selectedCurrencyName);
+  handleCurrencyCodeSmallScreen(selectedCurrency);
   handleEventListeners();
 });
 
+//Handles the currencyCode on small screens
+const handleCurrencyCodeSmallScreen = (currencyCode) => {
+  const content = document.querySelector(".smallFromAndTo");
+  let displayCurrencyCode = content.querySelector("p");
+
+  if(!displayCurrencyCode) {
+    displayCurrencyCode = document.createElement("p");
+    content.appendChild(displayCurrencyCode); 
+  }
+
+  displayCurrencyCode.innerText = `SEK > ${currencyCode}`
+}
+
 //Handles the calculations
-const currencyCalculator = async (currencyCode, isSekInput, currencyName) => {
+const currencyCalculator = async (currencyCode, isSekInput) => {
   const success = await storeRatesGlobally();
   if (!success) {
     displayFallbackMessage(["sumContainer"]);
@@ -376,7 +353,7 @@ const currencyCalculator = async (currencyCode, isSekInput, currencyName) => {
   }
 
   if (inputSek.value.length < 1 || inputToCurrency.value.length < 1) {
-    createAndAppendSumDiv(currencyCode, selectedRate, 0, 0, currencyName);
+    createAndAppendSumDiv(currencyCode, selectedRate, 0, 0);
   }
 
   console.log(`bulle lull ${selectedRate}`);
@@ -407,35 +384,35 @@ const currencyCalculator = async (currencyCode, isSekInput, currencyName) => {
     switch (currency) {
       case "SEK":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv("EUR", selectedRate, inputSekValue, result, "Euro");
+        createAndAppendSumDiv("EUR", selectedRate, inputSekValue, result);
         break;
       case "USD":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result);
         break;
       case "GBP":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result);
         break;
       case "DKK":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result);
         break;
       case "PLN":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result);
         break;
       case "THB":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result);
         break;
       case "NOK":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result);
         break;
       case "TRY":
         result = inputSekValue / selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, inputSekValue, result);
         break;
       default:
         console.log("Något gick fel");
@@ -455,35 +432,35 @@ const currencyCalculator = async (currencyCode, isSekInput, currencyName) => {
     switch (currency) {
       case "SEK":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv("EUR", selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv("EUR", selectedRate, result, inputToCurrencyValue);
         break;
       case "USD":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue);
         break;
       case "GBP":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue);
         break;
       case "DKK":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue);
         break;
       case "PLN":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue);
         break;
       case "THB":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue);
         break;
       case "NOK":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue);
         break;
       case "TRY":
         result = inputToCurrencyValue * selectedRate;
-        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue, currencyName);
+        createAndAppendSumDiv(currency, selectedRate, result, inputToCurrencyValue);
         break;
       default:
         console.log("Något gick fel");
@@ -498,12 +475,83 @@ const currencyCalculator = async (currencyCode, isSekInput, currencyName) => {
 };
 
 //Creates and handles the summery content
-const createAndAppendSumDiv = (currencyCode, rate, inputValue, result, currencyName) => {
+const createAndAppendSumDiv = (currencyCode, rate, inputValue, result) => {
   if (inputValue === undefined || inputValue === null) {
     inputValue = 0;
   }
 
-  console.log(`Detta är inputValue: ${inputValue}`);
+  let sumFrom;
+  let sumTo;
+  let currencyName;
+
+  if (inputValue % 1 === 0 || inputValue.toFixed(2).endsWith("00")) {
+    sumFrom = formatNumberWithSpaces(parseFloat(inputValue.toFixed(0)));
+  } else {
+    sumFrom = formatNumberWithSpaces(parseFloat(inputValue));
+  }
+
+  if (result % 1 === 0 || result.toFixed(2).endsWith("00")) {
+    sumTo = formatNumberWithSpaces(parseFloat(result.toFixed(0)));
+  } else {
+    sumTo = formatNumberWithSpaces(parseFloat(result));
+  }
+
+  switch (currencyCode) {
+    case "EUR":
+      currencyName = "Euro";
+      break;
+    case "USD":
+      if (sumTo != 1) {
+        currencyName = "Amerikanska dollar";
+      } else {
+        currencyName = "Amerikansk dollar";
+      }
+      break;
+    case "GBP":
+      if (sumTo != 1) {
+        currencyName = "Brittiska pund";
+      } else {
+        currencyName = "Brittisk pund";
+      }
+      break;
+    case "DKK":
+      if (sumTo != 1) {
+        currencyName = "Danska kronor";
+      } else {
+        currencyName = "Dansk krona";
+      }
+      break;
+    case "PLN":
+      if (sumTo != 1) {
+        currencyName = "Polska zloty";
+      } else {
+        currencyName = "Polsk zloty";
+      }
+      break;
+    case "THB":
+      if (sumTo != 1) {
+        currencyName = "Thailänska bath";
+      } else {
+        currencyName = "Thailänsk bath";
+      }
+      break;
+    case "NOK":
+      if (sumTo != 1) {
+        currencyName = "Norska kronor";
+      } else {
+        currencyName = "Norsk krona";
+      }
+      break;
+    case "TRY":
+      if (sumTo != 1) {
+        currencyName = "Turkiska lire";
+      } else {
+        currencyName = "Turkisk lira";
+      }
+      break;
+    default:
+      console.log("Något gick fel");
+  }
 
   const containerCurrencyInfo = document.querySelector(".currencyInfo");
   const sumContainerFrom = document.querySelector(".sumContainerFrom");
@@ -517,22 +565,27 @@ const createAndAppendSumDiv = (currencyCode, rate, inputValue, result, currencyN
   const currencyFrom = document.createElement("p");
   const currencyTo = document.createElement("p");
 
-  sumCurrencyCode.innerText = `Valutakurs 1 ${currencyCode} = ${rate.toFixed(
-    3
-  )} SEK`;
-  currencyFrom.innerHTML =
-    inputValue % 1 === 0
-      ? `<p>${inputValue.toFixed(0)} SEK</p>`
-      : `<p>${inputValue.toFixed(2)} SEK</p>`;
-  currencyTo.innerHTML =
-    result % 1 === 0
-      ? `<p>${currencyName}</p> <p>${result.toFixed(0)}</p>`
-      : `<p>${currencyName}</p> <p>${result.toFixed(2)}</p>`;
+  sumCurrencyCode.innerText = `Valutakurs 1 ${currencyCode} = ${rate.toFixed(3)} SEK`;
+  currencyFrom.innerHTML = sumFrom != 1 ? `<p>${sumFrom} Svenska kronor</p>` : `<p>${sumFrom} Svensk krona</p>`;
+  currencyTo.innerHTML = `<p>${sumTo} ${currencyName}</p>`;
 
   containerCurrencyInfo.appendChild(sumCurrencyCode);
   sumContainerFrom.appendChild(currencyFrom);
   sumContainerTo.appendChild(currencyTo);
 };
 
+  function formatNumberWithSpaces(number) {
+    const largeThreshold = 999999999999;
+    const smallThreshold = 1 / largeThreshold;
+    
+    if (number >= largeThreshold || number <= -largeThreshold || (number !== 0 && (number < smallThreshold || number > largeThreshold))) {
+      return number.toExponential(2).replace('.', ',');
+    } else {
+      return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(number);
+    }
+  }
+  
+  
+  
 createAndAppendDivCurrencyRate();
 createAndAppendPopularCurrencyCard();

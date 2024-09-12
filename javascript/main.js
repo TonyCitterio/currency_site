@@ -114,7 +114,7 @@ const createAndAppendPopularCurrencyCard = async () => {
       const container = document.getElementById(containerId);
       const card = document.createElement("div");
       card.classList.add("popularCurrencyToSekCard");
-      card.innerHTML = `<p>${number} ${fromCurrency} <span></span> = <span></span>${(
+      card.innerHTML = `<p>${number} ${fromCurrency} = ${(
         number * toCurrency
       ).toFixed(3)} SEK</p>`;
       container.appendChild(card);

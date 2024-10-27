@@ -10,7 +10,7 @@
 
 .smallFromAndTo {
   position: absolute;
-  top: -25px;
+  top: -30px;
   left: 0;
   width: clamp(20ch, 100%, 120ch);
   display: none;
@@ -128,7 +128,7 @@
   padding-right: 0.3rem;
   width: 100%;
   height: 100%;
-  /* font-size: 16px; */
+  font-size: 1rem;
   letter-spacing: 1px;
   font-weight: bold;
   font-family: inherit;
@@ -165,7 +165,7 @@ input[type="number"] {
 #sumContainer {
   padding: 1rem;
   position: relative;
-  margin-top: 0.75rem;
+  margin-top: 1.5rem;
   background-color: white;
   width: clamp(20ch, 90%, 120ch);
 }
@@ -211,7 +211,7 @@ input[type="number"] {
 }
 
 .currencyRatesContainer {
-  margin: 5rem 0 1rem;
+  margin: 3.5rem 0 1rem;
   width: clamp(20ch, 90%, 120ch);
   display: flex;
   flex-direction: column;
@@ -249,7 +249,7 @@ input[type="number"] {
 }
 
 .currencyTableContent {
-  margin: 1rem 0 5rem;
+  margin: 2rem 0 4rem;
   width: clamp(20ch, 90%, 120ch);
   display: flex;
   flex-wrap: wrap;
@@ -281,22 +281,10 @@ input[type="number"] {
 }
 
 .exampleContainer {
-  padding-top: 2rem;
-  position: relative;
+  padding-top: 2.5rem;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-}
-
-.exampleContainer::after {
-  content: "";
-  position: absolute;
-  top: 255px;
-  left: calc(0% + 25%);
-  height: 2px;
-  width: 50%;
-  background-color: #64b8ba;
-  border: none;
 }
 
 .exampleContainer h3 {
@@ -304,14 +292,15 @@ input[type="number"] {
 }
 
 .exampleContainer > *:nth-child(1) {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .exampleContainer > *:nth-child(2) {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  padding-bottom: 0.7rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -345,7 +334,7 @@ input[type="number"] {
     display: none;
   }
   .inputContentFrom {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.35rem;
   }
   .smallFromAndTo {
     display: block;
@@ -357,20 +346,17 @@ input[type="number"] {
 }
 
 @media (max-width: 644px) {
-  .exampleContainer {
-    padding-top: 1.5rem;
+  .currencyCalculatorContainer {
+    padding-block: 3.5rem;
   }
-  .exampleContainer::after {
-    top: 239px;
-  }
-  .exampleContainer > *:nth-child(1) {
-    margin-bottom: 1.5rem;
+  .currencyRatesContainer {
+    margin-top: 2.7rem;
   }
   #eurToSekContent {
     margin-bottom: 1rem;
   }
   .imgContainer {
-    margin-top: 0.75rem;
-    height: 375px;
+    margin-top: 1.75rem;
+    height: 475px;
   }
 }

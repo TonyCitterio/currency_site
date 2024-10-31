@@ -9,16 +9,21 @@
 
 .footerPictures {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
     margin-bottom: 1.25rem;
+}
+
+.footerPictures img {
+    width: 55px;
+    height: 55px;
 }
 
 .footer h3 {
     font-size: 1.75rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .footer p {
-    margin-top: 0.3rem;
+    margin-top: 0.5rem;
     font-style: italic;
 }

@@ -130,7 +130,8 @@ const displayFallbackMessage = (containerIds) => {
   containerIds.forEach((containerId) => {
     const container = document.getElementById(containerId);
     if (container) {
-      container.innerHTML = "<p class='errorMessage'>Ledsen, valuta kurser är för närvarande inte tillgängliga.</p>";
+      container.innerHTML =
+        "<p class='errorMessage'>Ledsen, valuta kurser är för närvarande inte tillgängliga.</p>";
     }
   });
 };
@@ -199,38 +200,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const dropdown = document.querySelector(".dropdown");
   const dropdownMenu = dropdown.querySelector(".dropdownMenu");
   const dropdownContent = dropdown.querySelector(".dropdownContent");
-  const dropdownItems = dropdownMenu.querySelectorAll("li");
+  const dropdownItems = Array.from(dropdownMenu.querySelectorAll("li"));
   const inputSek = document.getElementById("sek");
   const inputToCurrency = document.getElementById("toCurrency");
-  let selectedCurrency = "SEK";
+  let selectedCurrency = "EUR";
   let selectedCurrencyName = "Euro";
   let isUpdating = false;
+  let isMenuOpen = false;
+  let focusedItemIndex = -1;
 
-  const toggleDropdownMenu = (e) => {
-    if (
-      dropdownMenu.style.display === "none" ||
-      dropdownMenu.style.display === ""
-    ) {
-      dropdownMenu.style.display = "block";
-      document.addEventListener("click", outsideClick);
-    } else {
-      dropdownMenu.style.display = "none";
-      document.removeEventListener("click", outsideClick);
-    }
-    e.stopPropagation();
+  //Function to open the dropdown menu
+  const openDropdownMenu = () => {
+    dropdownMenu.style.display = "block";
+    dropdown.setAttribute("aria-expanded", "true");
+    isMenuOpen = true;
+    document.addEventListener("click", outsideClick);
   };
 
+  //Function to close the dropdown menu
+  const closeDropdownMenu = () => {
+    dropdownMenu.style.display = "none";
+    dropdown.setAttribute("aria-expanded", "false");
+    isMenuOpen = false;
+    focusedItemIndex = -1;
+    document.removeEventListener("click", outsideClick);
+  };
+
+  //Function to handle clicks outside the dropdown
   const outsideClick = (e) => {
     if (!dropdown.contains(e.target)) {
-      dropdownMenu.style.display = "none";
-      document.removeEventListener("click", outsideClick);
+      closeDropdownMenu();
     }
   };
 
+  //Function to update the dropdown content when an item is selected
   const handleDropdownContent = (currencyCode, imgSrc, countryName, currencyName) => {
     const flag = dropdownContent.querySelector("img");
     const country = dropdownContent.querySelector(".dropdownCountry");
-    const currencyTitle = dropdownContent.querySelector(".dropdownCurrencyName");
+    const currencyTitle = dropdownContent.querySelector(
+      ".dropdownCurrencyName"
+    );
 
     flag.src = imgSrc;
     flag.alt = `${countryName} flagga`;
@@ -249,45 +258,141 @@ document.addEventListener("DOMContentLoaded", () => {
     inputToCurrency.value = "";
   };
 
-  const handleEventListeners = () => {
-    dropdown.addEventListener("click", toggleDropdownMenu);
+  //Function to select a currency item
+  const selectCurrency = (item) => {
+    const currencyCode = item.getAttribute("data-currencyCode");
+    const imgSrc = item.querySelector("img").src;
+    const textParts = item.querySelector("p").textContent.split(" - ");
+    const countryName = textParts[1].trim();
+    const currencyName = textParts[2].trim();
 
-    dropdownMenu.addEventListener("click", (e) => {
+    handleDropdownContent(currencyCode, imgSrc, countryName, currencyName);
+    currencyCalculator(selectedCurrency, true, selectedCurrencyName);
+    handleCurrencyCodeSmallScreen(selectedCurrency);
+
+    closeDropdownMenu();
+    dropdown.focus();
+  };
+
+  //Event listener for clicking on the dropdown to toggle menu
+  dropdown.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (isMenuOpen) {
+      closeDropdownMenu();
+    } else {
+      openDropdownMenu();
+    }
+  });
+
+  //Event listener for keyboard interactions on the dropdown
+  dropdown.addEventListener("keydown", (e) => {
+    switch (e.key) {
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        if (!isMenuOpen) {
+          openDropdownMenu();
+        } else {
+          closeDropdownMenu();
+        }
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        if (!isMenuOpen) {
+          openDropdownMenu();
+        }
+        focusedItemIndex = 0;
+        dropdownItems[focusedItemIndex].focus();
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        if (!isMenuOpen) {
+          openDropdownMenu();
+        }
+        focusedItemIndex = dropdownItems.length - 1;
+        dropdownItems[focusedItemIndex].focus();
+        break;
+      case "Escape":
+        if (isMenuOpen) {
+          e.preventDefault();
+          closeDropdownMenu();
+        }
+        break;
+    }
+  });
+
+  dropdownItems.forEach((item, index) => {
+    item.setAttribute("tabindex", "-1");
+
+    //Event listener for clicking on a dropdown item
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      selectCurrency(item);
+    });
+
+    //Event listener for keyboard interactions on a dropdown item
+    item.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "Enter":
+        case " ":
+          e.preventDefault();
+          selectCurrency(item);
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          focusedItemIndex = (index + 1) % dropdownItems.length;
+          dropdownItems[focusedItemIndex].focus();
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          focusedItemIndex =
+            (index - 1 + dropdownItems.length) % dropdownItems.length;
+          dropdownItems[focusedItemIndex].focus();
+          break;
+        case "Tab":
+          if (isMenuOpen) {
+            closeDropdownMenu();
+          }
+          break;
+        case "Escape":
+          e.preventDefault();
+          closeDropdownMenu();
+          dropdown.focus();
+          break;
+      }
+    });
+
+    //Prevent default behavior for 'keydown' events to avoid conflicts
+    item.addEventListener("keyup", (e) => {
       e.stopPropagation();
     });
+  });
 
-    dropdownItems.forEach((item) => {
-      item.addEventListener("click", function () {
-        const currencyCode = this.getAttribute("data-currencyCode");
-        const imgSrc = this.querySelector("img").src;
-        const textParts = this.querySelector("p").textContent.split(" - ");
-        const countryName = textParts[1].trim();
-        const currencyName = textParts[2].trim();
+  //Prevent events from bubbling up from the dropdown menu
+  dropdownMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
 
-        handleDropdownContent(currencyCode, imgSrc, countryName, currencyName);
-        currencyCalculator(selectedCurrency, true, selectedCurrencyName);
-        handleCurrencyCodeSmallScreen(selectedCurrency);
-        dropdownMenu.style.display = "none";
-        document.removeEventListener("click", outsideClick);
-      });
-    });
+  dropdownMenu.addEventListener("keydown", (e) => {
+    e.stopPropagation();
+  });
 
-    inputSek.addEventListener("input", () => {
-      if (!isUpdating) {
-        currencyCalculator(selectedCurrency, true, selectedCurrencyName);
-      }
-    });
-    inputToCurrency.addEventListener("input", () => {
-      if (!isUpdating) {
-        currencyCalculator(selectedCurrency, false, selectedCurrencyName);
-      }
-    });
-  };
+  //Event listeners for input fields
+  inputSek.addEventListener("input", () => {
+    if (!isUpdating) {
+      currencyCalculator(selectedCurrency, true, selectedCurrencyName);
+    }
+  });
+
+  inputToCurrency.addEventListener("input", () => {
+    if (!isUpdating) {
+      currencyCalculator(selectedCurrency, false, selectedCurrencyName);
+    }
+  });
 
   handleDropdownContent("EUR", "./picture/icons8-european-union-circular-flag-48.png", "Euro", "Euro");
   currencyCalculator(selectedCurrency, true, selectedCurrencyName);
   handleCurrencyCodeSmallScreen(selectedCurrency);
-  handleEventListeners();
 });
 
 //Handles the currencyCode on small screens
@@ -295,13 +400,13 @@ const handleCurrencyCodeSmallScreen = (currencyCode) => {
   const content = document.querySelector(".smallFromAndTo");
   let displayCurrencyCode = content.querySelector("p");
 
-  if(!displayCurrencyCode) {
+  if (!displayCurrencyCode) {
     displayCurrencyCode = document.createElement("p");
-    content.appendChild(displayCurrencyCode); 
+    content.appendChild(displayCurrencyCode);
   }
 
-  displayCurrencyCode.innerText = `SEK > ${currencyCode}`
-}
+  displayCurrencyCode.innerText = `SEK > ${currencyCode}`;
+};
 
 //Handles the calculations
 const currencyCalculator = async (currencyCode, isSekInput) => {
@@ -355,10 +460,6 @@ const currencyCalculator = async (currencyCode, isSekInput) => {
   if (inputSek.value.length < 1 || inputToCurrency.value.length < 1) {
     createAndAppendSumDiv(currencyCode, selectedRate, 0, 0);
   }
-
-  console.log(`bulle lull ${selectedRate}`);
-
-  console.log(`Detta är test: ${currency}`);
 
   isUpdating = true;
 
@@ -565,8 +666,13 @@ const createAndAppendSumDiv = (currencyCode, rate, inputValue, result) => {
   const currencyFrom = document.createElement("p");
   const currencyTo = document.createElement("p");
 
-  sumCurrencyCode.innerText = `Valutakurs 1 ${currencyCode} = ${rate.toFixed(3)} SEK`;
-  currencyFrom.innerHTML = sumFrom != 1 ? `<p>${sumFrom} Svenska kronor</p>` : `<p>${sumFrom} Svensk krona</p>`;
+  sumCurrencyCode.innerText = `Valutakurs 1 ${currencyCode} = ${rate.toFixed(
+    3
+  )} SEK`;
+  currencyFrom.innerHTML =
+    sumFrom != 1
+      ? `<p>${sumFrom} Svenska kronor</p>`
+      : `<p>${sumFrom} Svensk krona</p>`;
   currencyTo.innerHTML = `<p>${sumTo} ${currencyName}</p>`;
 
   containerCurrencyInfo.appendChild(sumCurrencyCode);
@@ -574,18 +680,22 @@ const createAndAppendSumDiv = (currencyCode, rate, inputValue, result) => {
   sumContainerTo.appendChild(currencyTo);
 };
 
-  function formatNumberWithSpaces(number) {
-    const largeThreshold = 999999999999;
-    const smallThreshold = 1 / largeThreshold;
-    
-    if (number >= largeThreshold || number <= -largeThreshold || (number !== 0 && (number < smallThreshold || number > largeThreshold))) {
-      return number.toExponential(2).replace('.', ',');
-    } else {
-      return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(number);
-    }
+function formatNumberWithSpaces(number) {
+  const largeThreshold = 999999999999;
+  const smallThreshold = 1 / largeThreshold;
+
+  if (
+    number >= largeThreshold ||
+    number <= -largeThreshold ||
+    (number !== 0 && (number < smallThreshold || number > largeThreshold))
+  ) {
+    return number.toExponential(2).replace(".", ",");
+  } else {
+    return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(
+      number
+    );
   }
-  
-  
-  
+}
+
 createAndAppendDivCurrencyRate();
 createAndAppendPopularCurrencyCard();

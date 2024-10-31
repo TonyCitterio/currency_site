@@ -33,7 +33,6 @@
   position: relative;
   display: flex;
   background-color: white;
-  /* border: 3px solid pink; */
 }
 
 .fromAndTo {
@@ -92,7 +91,6 @@
   top: calc(100% + 0.35rem);
   left: 0;
   background-color: white;
-  /* border: 1px solid #64b8ba; */
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   z-index: 10;
 }
@@ -102,10 +100,12 @@
   list-style-type: none;
   display: flex;
   align-items: center;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .dropdownMenu li:nth-child(odd) {
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
+  background-color: #ededed;
 }
 
 .dropdownMenu li img {
@@ -114,6 +114,10 @@
 
 .dropdownMenu li span {
   font-weight: bold;
+}
+
+.dropdown li:hover {
+  background-color: #64b8ba;
 }
 
 .inputNumberTo,
@@ -358,5 +362,14 @@ input[type="number"] {
   .imgContainer {
     margin-top: 1.75rem;
     height: 475px;
+  }
+}
+
+@media (hover: none), (hover: on-demand) {
+  .dropdown li:hover {
+    background-color: initial;
+  }
+  .dropdownMenu li {
+    transition: none;
   }
 }

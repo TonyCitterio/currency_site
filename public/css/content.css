@@ -266,7 +266,7 @@ input[type="number"] {
 
 .imgContainer {
   flex: 1 1 58%;
-  background-image: url(/picture/travel1.jpg);
+  background-image: url(../picture/travel1.jpg);
   background-size: cover;
   background-position: center;
   border-radius: 0.5rem;
